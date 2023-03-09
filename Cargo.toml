@@ -1,0 +1,12 @@
+[package]
+name = "ecosystem_dimension_reduction"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+zip = "0.6.4"
+csv = "1.2"
+kiddo = "0.2.5"
+indicatif = "0.17.3"
