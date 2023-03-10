@@ -4,7 +4,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Import sphere points
 
-    let sp_path = "/home/christopher/git/ecosystem_dimension_reduction/input_files/10000SpherePoints.csv";
+    let sp_path = "/home/christopher/git/ecosystem_dimension_reduction/input_files/100000SpherePoints.csv";
     let sp_file = std::fs::File::open(sp_path)?;
     let mut sp_csv_reader = csv::ReaderBuilder::new()
         .has_headers(false)
@@ -37,8 +37,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
      // 1060970490 is the number of observations in the dataset according to the GDIF website
     let bar = indicatif::ProgressBar::new(1060970490);
     bar.set_style(indicatif::ProgressStyle::with_template("[{elapsed_precise}] eta: {eta_precise} {bar:40} {percent}% {pos}/{len} {per_sec}")?);
-    for row_res in csv_reader.records() {
-        bar.inc(1);
+    for (row_index, row_res) in csv_reader.records().enumerate() {
+        if row_index % 10000 == 0 {
+            bar.inc(10000);
+        }
 
         let res = (|| {
             let row = row_res?;
@@ -62,7 +64,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Write results to file
 
-    let output_path = "/home/christopher/git/ecosystem_dimension_reduction/output_files/10000CellSpeciesCounts.csv";
+    let output_path = "/home/christopher/git/ecosystem_dimension_reduction/output_files/100000CellSpeciesCounts.csv";
     let output_file = std::fs::File::create(output_path)?;
     let mut writer = csv::Writer::from_writer(output_file);
     for (cell, species_counts) in cell_counts.iter() {
