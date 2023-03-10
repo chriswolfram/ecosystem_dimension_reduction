@@ -34,7 +34,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut cell_counts = HashMap::new();
 
-     // 1060970490 is the number of observations in the dataset according to the GDIF website
+     // 1060970490 is the number of observations in the dataset according to the GBIF website
     let bar = indicatif::ProgressBar::new(1060970490);
     bar.set_style(indicatif::ProgressStyle::with_template("[{elapsed_precise}] eta: {eta_precise} {bar:40} {percent}% {pos}/{len} {per_sec}")?);
     for (row_index, row_res) in csv_reader.records().enumerate() {
@@ -51,9 +51,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let lat_rad = lat.to_radians();
             let long_rad = long.to_radians();
             let xyz = [lat_rad.cos() * long_rad.cos(), lat_rad.cos() * long_rad.sin(), lat_rad.sin()];
-            let nearest = kdtree.nearest_one(&xyz, &kiddo::distance::squared_euclidean)?;
-            *cell_counts.entry(nearest.1).or_insert(HashMap::new()).entry(species).or_insert(0) += count;
-            // *cell_counts.entry(nearest.1).or_insert(0) += count;
+            let (_, nearest) = kdtree.nearest_one(&xyz, &kiddo::distance::squared_euclidean)?;
+            *cell_counts.entry(nearest).or_insert(HashMap::new()).entry(species).or_insert(0) += count;
             Ok::<(), Box<dyn std::error::Error>>(())
         })();
 
